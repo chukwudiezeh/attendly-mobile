@@ -5,17 +5,41 @@
  * @format
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
+// import { NewAppScreen } from '@react-native/new-app-screen';
+import "./global.css";
+import { GluestackUIProviderWrapper } from '@/src/components/ui/gluestack-ui-provider';
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useEffect } from 'react';
+import AppNavigator from '@/src/navigations/AppNavigator';
+import BootSplash from 'react-native-bootsplash';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/src/components/common/Toasts';
+import { AuthProvider } from "./src/context/AuthContext";
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
+ useEffect(() => {
+    const prepareApp = async () => {
+      // Any async task like loading fonts, checking auth, etc.
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate 3s delay
+    };
+
+    prepareApp().finally(async () => {
+      await BootSplash.hide({ fade: true }); // Hide native splash screen
+    });
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
+    <GluestackUIProviderWrapper mode="light">
+      <AuthProvider>
+        <View style={styles.container}>
+            <StatusBar barStyle={ isDarkMode ? 'light-content' : 'dark-content' } />
+            <AppNavigator />
+            <Toast config={toastConfig} />
+        </View>
+      </AuthProvider>
+    </GluestackUIProviderWrapper>
   );
 }
 

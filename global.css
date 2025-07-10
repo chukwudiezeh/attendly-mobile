@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-primary-0: 0 33 71;
+    --color-primary-50: 0 33 71;
+    --color-primary-100: 0 33 71;
+    --color-primary-200: 0 33 71;
+    --color-primary-300: 0 33 71;
+    --color-primary-400: 0 33 71;
+    --color-primary-500: 0 33 71;
+    --color-primary-600: 0 33 71;
+    --color-primary-700: 0 33 71;
+    --color-primary-800: 0 33 71;
+    --color-primary-900: 0 33 71;
+    --color-primary-950: 0 33 71;
+
+    --color-secondary-0: 253 203 88;
+    --color-secondary-50: 253 203 88;
+    --color-secondary-100: 253 203 88;
+    --color-secondary-200: 253 203 88;
+    --color-secondary-300: 253 203 88;
+    --color-secondary-400: 253 203 88;
+    --color-secondary-500: 253 203 88;
+    --color-secondary-600: 253 203 88;
+    --color-secondary-700: 253 203 88;
+    --color-secondary-800: 253 203 88;
+    --color-secondary-900: 253 203 88;
+    --color-secondary-950: 253 203 88;
+
+    --color-tertiary-0: 0 87 160;
+    --color-tertiary-50: 0 87 160;
+    --color-tertiary-100: 0 87 160;
+    --color-tertiary-200: 0 87 160;
+    --color-tertiary-300: 0 87 160;
+    --color-tertiary-400: 0 87 160;
+    --color-tertiary-500: 0 87 160;
+    --color-tertiary-600: 0 87 160;
+    --color-tertiary-700: 0 87 160;
+    --color-tertiary-800: 0 87 160;
+    --color-tertiary-900: 0 87 160;
+    --color-tertiary-950: 0 87 160;
+
+}

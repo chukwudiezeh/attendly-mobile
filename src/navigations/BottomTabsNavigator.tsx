@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DashboardScreen from '@/src/screens/student/DashboardScreen';
 // Example screens
-const HomeScreen = () => <View className="flex-1 items-center justify-center"><Text>Home</Text></View>;
+// const HomeScreen = () => <View className="flex-1 items-center justify-center"><Text>Home</Text></View>;
 const ProfileScreen = () => <View className="flex-1 items-center justify-center"><Text>Profile</Text></View>;
 const SettingsScreen = () => <View className="flex-1 items-center justify-center"><Text>Settings</Text></View>;
 
@@ -29,7 +29,7 @@ const BottomTabs = () => {
         }
       })}
     >
-      <Tab.Screen name="Home" component={ DashboardScreen } />
+      <Tab.Screen name="Dashboard" component={ DashboardScreen } />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>

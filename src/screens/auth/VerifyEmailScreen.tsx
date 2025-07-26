@@ -47,7 +47,7 @@ const VerifyEmailScreen = () => {
             text1: 'Email verified successfully!',
           });
 
-        navigation.navigate('Dashboard'); // Adjust the target screen as necessary
+        // navigation.navigate('Dashboard');
       } catch (error: any) {
         console.error('OTP Verification Error:', error);
         Toast.show({

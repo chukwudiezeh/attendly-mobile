@@ -3,17 +3,17 @@ import { View, Text, Image } from 'react-native';
 
 export const WelcomeCard = () => {
   return (
-    <View className="bg-gray-100 p-4 rounded-xl flex-row justify-between items-center">
+    <View className="bg-tertiary-100 p-4 rounded-2xl flex-row justify-between items-center mb-6">
       <View>
-        <Text className="text-lg font-bold">Eliana Brian</Text>
+        <Text className="text-lg font-bold text-white">Eliana Brian</Text>
+        <Text className="text-sm text-gray-500 mt-2 text-white">Matric No: 1000012233</Text>
+
         <View className="flex-row space-x-2 mt-1">
-          <Text className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Class IX - A</Text>
-          <Text className="text-xs text-gray-600">Roll No: 12</Text>
+          <Text className="text-sm text-white">200 Level, </Text>
+          <Text className="text-sm text-white">2nd Semester</Text>
         </View>
-        <Text className="text-xs text-gray-500 mt-2">Attendance</Text>
-        <View className="w-40 h-2 bg-gray-300 rounded-full mt-1">
-          <View className="w-[53%] h-2 bg-green-600 rounded-full" />
-        </View>
+        <Text className="text-sm text-white mt-2">Computer Science</Text>
+        
       </View>
       <Image
         source={{ uri: 'https://i.pravatar.cc/150?img=12' }}

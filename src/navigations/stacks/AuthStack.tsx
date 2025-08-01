@@ -5,6 +5,7 @@ import VerifyEmailScreen from '../../screens/auth/VerifyEmailScreen';
 import { useAuth } from '../../context/AuthContext';
 import BottomTabsNavigator from '../BottomTabsNavigator';
 import DrawerNavigator from '../DrawerNavigator';
+import CourseRegScreen from '@/src/screens/student/course/CourseRegScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,11 +15,19 @@ const AuthStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {authData?.user?.emailVerified ? (
+        <>
         <Stack.Screen
           name="Drawer"
           component={ DrawerNavigator } // Assuming Dashboard is part of BottomTabsNavigator
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="CourseRegScreen"
+          component={CourseRegScreen}
+          options={{ headerShown: false }}
+
+        />
+        </>
 
       ) : (
         <Stack.Screen

@@ -1,36 +1,17 @@
 import React, { useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
 import { WelcomeCard } from '@/src/components/dashboard/WelcomeCard';
-// import { AcademicTile } from '@/src/components/dashboard/AcademicTile';
-// import { HomeworkCard } from '@/src/components/dashboard/HomeworkCard';
-// import { EventUpdate } from '@/src/components/dashboard/EventUpdate';
+import { ScreenHeader } from '@/src/components/common/ScreenHeader';
 import { useAuth } from '@/src/context/AuthContext';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 const DashboardScreen = () => {
-  // const { authData } = useAuth();
-  type DrawerParamList = {
-    Dashboard: undefined;
-    Profile: undefined;
-    Settings: undefined;
-  };
-  const drawerNavigation = useNavigation<DrawerNavigationProp<DrawerParamList>>();
-  const { logout } = useAuth();
 
   return (
     <ScrollView className="flex-1 bg-gray-100 px-4 pt-16 pb-16" contentContainerStyle={{ paddingBottom: 64 }}>
-      <View className="flex-row items-center justify-between pb-4 shadow-md">
-        <TouchableOpacity onPress={() => drawerNavigation.dispatch(DrawerActions.openDrawer())}>
-          <Ionicons name="menu" size={28} color="#002147" /> {/* gray-800 */}
-        </TouchableOpacity>
-  
-        <TouchableOpacity onPress={() => drawerNavigation.dispatch(DrawerActions.openDrawer())}>
-          <Ionicons name="notifications" size={25} color="#002147" /> {/* gray-800 */}
-        </TouchableOpacity>
-      </View>
+      {/* Header */}
+      <ScreenHeader />
 
       {/* Greeting and profile */}
       <Text className="text-l mb-3">Hi there, Welcome!</Text>

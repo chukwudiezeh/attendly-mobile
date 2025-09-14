@@ -9,11 +9,13 @@ import { useAuth } from '@/src/context/AuthContext';
 import { getCurriculumCourses, RegisterUserCourses } from '@/src/services/courseService';
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
+import { getDepartments } from '@/src/services/utilityService';
 
-const levels = ['100', '200', '300', '400', '500', '600'];
+const levels = ['100', '200', '300', '400'];
 const semesters = [{label: '1st Semester', value: 'first'}, {label: '2nd Semester', value: 'second'}];
+// const departments: { label: string; value: string }[] = [];
 
-const CourseRegScreen = () => {
+const LecturerCourseRegScreen = () => {
   const { authData } = useAuth();
   const token = authData?.token;
   const user = authData?.user;
@@ -21,22 +23,25 @@ const CourseRegScreen = () => {
   const navigation = useNavigation();
   
   const [academicYears, setAcademicYears] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedSemester, setSelectedSemester] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('');
   const [courses, setCourses] = useState<any[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<any[]>([]);
   const [previewVisible, setPreviewVisible] = useState(false);
-
+  
   useEffect(() => {
     fetchAcademicYears();
+    fetchDepartments();
 
     if (selectedSession && selectedLevel && selectedSemester) {
-      fetchCurriculumCourses(user?.department?.id, selectedSession, selectedLevel, selectedSemester, token);
+      fetchCurriculumCourses(selectedDepartment, selectedSession, selectedLevel, selectedSemester, token);
     } else {
       setCourses([]);
     }
-  }, [selectedSession, selectedLevel, selectedSemester]);
+  }, [selectedDepartment, selectedSession, selectedLevel, selectedSemester]);
 
   const fetchAcademicYears = async () => {
     try {
@@ -45,6 +50,21 @@ const CourseRegScreen = () => {
       setAcademicYears(academicYears.data);
     } catch (error) {
       console.error('Error fetching academic years:', error);
+    }
+  };
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await getDepartments();
+      console.log('Fetched Departments:', response);
+      // Assuming the response is an array of departments
+      const formattedDepartments = response.data.map((dept: any) => ({
+        label: dept.name, // Adjust based on your API response structure
+        value: dept.id, // Adjust based on your API response structure
+      }));
+      setDepartments(formattedDepartments);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
     }
   };
 
@@ -72,6 +92,15 @@ const CourseRegScreen = () => {
     setSelectedCourses(prev => prev.filter(c => c.id !== id));
   };
 
+  const reInitializeSelections = () => {
+    setSelectedCourses([]);
+    setSelectedSession('');
+    setSelectedLevel('');
+    setSelectedSemester('');
+    setSelectedDepartment('');
+    setCourses([]);
+  };
+
   const saveSelectedCourses = async () => {
     // Implement save logic here, e.g., send to backend
     console.log('Saving selected courses:', selectedCourses);
@@ -81,7 +110,7 @@ const CourseRegScreen = () => {
         academicYear: selectedSession,
         level: selectedLevel,
         semester: selectedSemester,
-        department: user?.department?.id,
+        department: selectedDepartment,
         curriculumCourseRole: user?.role,
         curriculumCourses: selectedCourseIds
       };
@@ -93,7 +122,8 @@ const CourseRegScreen = () => {
           text1: saveUserCourses.message || 'Courses registered successfully',
         });
 
-        navigation.navigate('Course' as never);
+        reInitializeSelections();
+        navigation.goBack();
       }
 
     } catch (error: any) {
@@ -114,7 +144,7 @@ const CourseRegScreen = () => {
   return (
     <View className="flex-1 bg-gray-100 px-4 pt-16 pb-16">
       <View className="mb-4">
-        <BackHeader title='Student Course Registration'/>
+        <BackHeader  title='Select your courses'/>
 
         {/* Dropdowns */}
         <View className="mb-4 z-10 bg-white p-4 rounded-lg shadow">
@@ -128,6 +158,23 @@ const CourseRegScreen = () => {
               placeholder="Select an academic session"
               value={selectedSession}
               onChange={item => setSelectedSession(item.value)}
+              itemTextStyle={{ fontSize: 14 }}
+              selectedTextStyle={{ fontSize: 14 }}
+              placeholderStyle={{ color: '#9CA3AF' }}
+              style={{ borderWidth: 1, borderRadius: 8, borderColor: '#ccc', paddingHorizontal: 12, height: 50 }}
+            />
+          </View>
+          <View className="mb-2">
+            <Dropdown
+              data={departments}
+              search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Department"
+              searchPlaceholder="Search..."
+              value={selectedDepartment}
+              onChange={item => setSelectedDepartment(item.value)}
               itemTextStyle={{ fontSize: 14 }}
               selectedTextStyle={{ fontSize: 14 }}
               placeholderStyle={{ color: '#9CA3AF' }}
@@ -292,4 +339,4 @@ const CourseRegScreen = () => {
   );
 };
 
-export default CourseRegScreen;
+export default LecturerCourseRegScreen;

@@ -9,7 +9,7 @@ export interface LoginResponse {
       
     };
 }
-  
+
 export interface RegisterPayload {
   firstName: string;
   lastName: string;
@@ -26,7 +26,11 @@ export type User = {
   lastName: string;
   email: string;
   role: string;
-  department: string;
+  department: { id: string; name: string };
+  academicYear?: { id: string; code: string, status: string, isCurrentYear: boolean };
+  level?: string;
+  semester?: string;
+  profilePicture?: string;
   matricNumber?: string;
   emailVerified: boolean;
 };
@@ -50,3 +54,16 @@ export type NonAuthStackParamList = {
   Login: undefined;
   Register: undefined;
 };
+
+export type LecturerStackParamList = {
+  LecturerCourseIndexScreen: undefined;
+  LecturerCourseRegScreen: undefined;
+  LecturerViewCourseRegScreen: { semester: string; academicYear: any };
+  ClassSettingScreen: { userCourse: any };
+  ViewClassesScreen: { userCourse: any };
+  ViewClassDetailScreen: { userCourse: any, classId: string };
+};
+
+export interface BackHeaderProps {
+  title: string;
+}

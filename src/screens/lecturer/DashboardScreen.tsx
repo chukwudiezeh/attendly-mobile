@@ -6,7 +6,7 @@ import { useAuth } from '@/src/context/AuthContext';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-const DashboardScreen = () => {
+const LecturerDashboardScreen = () => {
 
   return (
     <ScrollView className="flex-1 bg-gray-100 px-4 pt-16 pb-16" contentContainerStyle={{ paddingBottom: 64 }}>
@@ -126,4 +126,4 @@ const DashboardScreen = () => {
   );
 };
 
-export default DashboardScreen;
+export default LecturerDashboardScreen;

@@ -6,3 +6,9 @@ export const getDepartments = async () => {
 
   return response.data;
 };
+
+export const getAcademicYears = async () => {
+  const response = await axios.get(`${apiBaseUrl}/utilities/academic-years`);
+
+  return response.data;
+};

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ScreenHeader } from '@/src/components/common/ScreenHeader';
 import { useNavigation } from '@react-navigation/native';
+import { getUserCourseRegs } from '@/src/services/courseService';
+import { useAuth } from '@/src/context/AuthContext';
 
 const mockCourseRegistrations = [
   // Example data structure
@@ -15,6 +17,24 @@ const mockCourseRegistrations = [
 ];
 
 const CourseIndexScreen = () => {
+  const { authData } = useAuth();
+  const token = authData?.token;
+
+  const [userCourseRegs, setUserCourseRegs] = useState<any[]>([]);
+  useEffect(() => {
+      const fetchUserCourseRegs = async () => {
+        try {
+          const response = await getUserCourseRegs(token);
+          setUserCourseRegs(response.data);
+
+        } catch (error) {
+          console.error('Error fetching courses:', error);
+        }
+      };
+  
+      fetchUserCourseRegs();
+    }, [token]);
+
     const navigation = useNavigation();
 
   const handleAddCourse = () => {
@@ -43,7 +63,7 @@ const CourseIndexScreen = () => {
   );
 
   return (
-    <ScrollView className="flex-1 bg-gray-100 px-4 pt-16" contentContainerStyle={{ paddingBottom: 64 }}>
+    <View className="flex-1 bg-gray-100 px-4 pt-16">
       {/* Header with Add Button */}
         <ScreenHeader />
       <View className="flex-row justify-end mt-4 mb-4">
@@ -57,20 +77,20 @@ const CourseIndexScreen = () => {
       </View>
 
       {/* Course Registration List */}
-      {mockCourseRegistrations.length === 0 ? (
+      {userCourseRegs.length === 0 ? (
         <View className="flex-1 items-center justify-center mt-20">
           <Ionicons name="folder-open-outline" size={64} color="#d1d5db" style={{ marginBottom: 12 }} />
           <Text className="text-gray-500 text-base">No Course registration done yet</Text>
         </View>
       ) : (
         <FlatList
-          data={mockCourseRegistrations}
+          data={userCourseRegs}
           keyExtractor={(_, idx) => idx.toString()}
           renderItem={renderRegistration}
           contentContainerStyle={{ paddingBottom: 32 }}
         />
       )}
-    </ScrollView>
+    </View>
   );
 };
 

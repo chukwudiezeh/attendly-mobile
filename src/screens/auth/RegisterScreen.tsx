@@ -9,7 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AuthHeader } from '@/src/components/auth/auth-header';
@@ -237,7 +238,11 @@ const RegisterScreen = () => {
             className="bg-primary-500 py-4 rounded-xl items-center"
             onPress={handleRegister}
           >
-            <Text className="text-secondary-500 font-semibold">Sign up</Text>
+            { isLoading ? (
+              <ActivityIndicator size="small" className="text-tertiary-600" />
+            ) : (
+              <Text className="text-secondary-500 font-semibold">Sign up</Text>
+            )}
           </TouchableOpacity>
 
           {/* Login Link */}

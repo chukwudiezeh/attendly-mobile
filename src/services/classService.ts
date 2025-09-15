@@ -56,3 +56,31 @@ export const getClassSchedule = async (token: string | undefined, curriculumCour
         throw error;
     }
 }
+
+export const getClassesByCourse = async (token: string | undefined, curriculumCourse: string) => {
+    try {
+        const response = await axios.get(`${apiBaseUrl}/classes/curriculum-course/${curriculumCourse}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching classes for course id: ${curriculumCourse}`, error);
+        throw error;
+    }
+};
+
+export const updateClass = async (token: string | undefined, classId: string, payload: any) => {
+    try {
+        const response = await axios.put(`${apiBaseUrl}/classes/${classId}`, payload, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating class info:', error);
+        throw error;
+    }
+};

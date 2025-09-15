@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
 import { BackHeader } from '@/src/components/common/BackHeader';
-
-const dummyCourse = {
-  code: 'GST 101',
-  name: 'Use of English',
-  location: 'Lecture Hall 2',
-  date: '2025-09-14',
-  startTime: '09:00 AM',
-  endTime: '10:00 AM',
-};
+import {updateClass} from '@/src/services/classService';
+import { useAuth } from '@/src/context/AuthContext';
+import Geolocation from '@react-native-community/geolocation';
 
 const tabs = [
   { key: 'details', label: 'Details' },
@@ -21,8 +15,68 @@ const tabs = [
 
 const ViewClassDetailScreen = () => {
   const route = useRoute();
-  const { userCourse, classId } = route.params as { userCourse: any; classId: string };
+  const { userCourse, class: classDetail } = route.params as { userCourse: any; class: any };
+  const [classInfo, setClassInfo] = useState(classDetail);
+  const [startButtonLoading, setStartButtonLoading] = useState(false);
+  
+  const { authData } = useAuth();
+  const token = authData?.token;
 
+  useEffect(() => {
+    // TODO: Fetch class details using the token
+  }, [token]);
+
+  const handleStartClass = async () => {
+    setStartButtonLoading(true);
+    try {
+      Geolocation.getCurrentPosition(
+        async (position) => {
+          const payload = {
+            status: 'in_progress',
+            geolocationData: position.coords
+          };
+          try {
+            const updatedClass = await updateClass(token || '', classInfo.id, payload);
+            console.log('Class started:', updatedClass);
+            setClassInfo(updatedClass);
+          } catch (err) {
+            console.error('Error updating class:', err);
+          }
+          setStartButtonLoading(false);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          setStartButtonLoading(false);
+          // Optionally, send status without location if needed
+          // const payload = { status: 'in_progress' };
+          // updateClass(token || '', classDetail.id, payload);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    } catch (error) {
+      console.error('Error starting class:', error);
+      setStartButtonLoading(false);
+    }
+  };
+
+  const handleEndClass = async () => {
+    setStartButtonLoading(true);
+    try {
+      const payload = { status: 'completed' };
+      try {
+        const updatedClass = await updateClass(token || '', classInfo.id, payload);
+        console.log('Class ended:', updatedClass);
+        setClassInfo(updatedClass);
+      } catch (err) {
+        console.error('Error updating class:', err);
+      }
+      setStartButtonLoading(false);
+    } catch (error) {
+      console.error('Error ending class:', error);
+      setStartButtonLoading(false);
+    }
+  };
+  
   const [activeTab, setActiveTab] = useState('details');
 
   return (
@@ -33,14 +87,36 @@ const ViewClassDetailScreen = () => {
       <View className="bg-primary-100 rounded-xl shadow p-4 mb-6 flex-row items-center">
         <Ionicons name="school-outline" size={32} color="#fff" />
         <View className="ml-4 flex-1">
-          <Text className="text-base font-bold text-white">{dummyCourse.code}</Text>
-          <Text className="text-sm text-white mb-1">{dummyCourse.name}</Text>
+          <Text className="text-base font-bold text-white">{userCourse.curriculumCourse.course.code}</Text>
+          <Text className="text-sm text-white mb-1">{userCourse.curriculumCourse.course.name}</Text>
           <Text className="text-xs text-white">
-            {dummyCourse.date} | {dummyCourse.startTime} - {dummyCourse.endTime}
+            {classInfo.actualDate || 'N/A'} | {classInfo.classSchedule.startTime} - {classInfo.classSchedule.endTime}
           </Text>
-          <Text className="text-xs text-white mt-1">Location: {dummyCourse.location}</Text>
+          <Text className="text-xs text-white mt-1">Location: {classInfo.classSchedule.location}</Text>
         </View>
       </View>
+
+      {/* Start/End Class Button */}
+      {classInfo.status !== 'completed' && (
+        <View className="mb-4 items-end">
+          <TouchableOpacity
+            className="bg-primary-600 px-4 py-2 rounded-lg flex-row items-center justify-center"
+            onPress={classInfo.status === 'scheduled' ? handleStartClass : handleEndClass}
+            disabled={startButtonLoading}
+          >
+            {startButtonLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <>
+                <Ionicons name={classInfo.status === 'scheduled' ? 'play' : 'stop'} size={18} color="#fff" />
+                <Text className="text-white font-semibold ml-2">
+                  {classInfo.status === 'scheduled' ? 'Start Class' : 'End Class'}
+                </Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Top Tabs */}
       <View className="flex-row bg-white rounded-xl shadow mb-4">
@@ -62,11 +138,13 @@ const ViewClassDetailScreen = () => {
         {activeTab === 'details' && (
           <View className="p-2">
             <Text className="text-base font-bold mb-2">Class Information</Text>
-            <Text className="mb-1">Course: {dummyCourse.name}</Text>
-            <Text className="mb-1">Code: {dummyCourse.code}</Text>
-            <Text className="mb-1">Date: {dummyCourse.date}</Text>
-            <Text className="mb-1">Time: {dummyCourse.startTime} - {dummyCourse.endTime}</Text>
-            <Text className="mb-1">Location: {dummyCourse.location}</Text>
+            <Text className="mb-1">Course: {userCourse.curriculumCourse.course.name}</Text>
+            <Text className="mb-1">Code: {userCourse.curriculumCourse.course.code}</Text>
+            <Text className="mb-1">Date: {classInfo.actualDate || 'N/A'}</Text>
+            <Text className="mb-1">Time: {classInfo.classSchedule.startTime} - {classInfo.classSchedule.endTime}</Text>
+            <Text className="mb-1">Location: {classInfo.classSchedule.location}</Text>
+
+            <Text className="mb-1">Status: {classInfo.status}</Text>
           </View>
         )}
         {activeTab === 'members' && (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -6,6 +6,9 @@ import { BackHeader } from '@/src/components/common/BackHeader';
 import { Dropdown } from 'react-native-element-dropdown';
 import { LecturerStackParamList } from '@/src/config/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '@/src/context/AuthContext';
+import { getAcademicYears } from '@/src/services/utilityService';
+import { getUserCoursesInCourseReg } from '@/src/services/courseService';
 
 const dummyAttendanceSessions = [
   {
@@ -37,13 +40,66 @@ const semesters = [
 ];
 
 const LecturerAttendanceIndexScreen = () => {
+  const {authData} = useAuth();
+  const user = authData?.user;
+  const token = authData?.token;
+  const [courses, setCourses] = useState<any[]>([]);
   const navigation = useNavigation<NativeStackNavigationProp<LecturerStackParamList>>();
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState(dummyAttendanceSessions);
+  const [academicYears, setAcademicYears] = useState<any[]>([]);
+  const [userCourses, setUserCourses] = useState<any[]>([]);
 
   // Academic session and semester state
-  const [academicSession, setAcademicSession] = useState('');
+  const [academicYear, setAcademicYear] = useState('');
   const [semester, setSemester] = useState('');
+
+
+  useEffect(() => {
+    //load academicYear
+    fetchAcademicYears();
+    handleSemester();
+    //fetch list data
+    fetchCourses();
+
+
+  }, [academicYear])
+
+  const fetchCourses = async () => {
+        try {
+          const response = await getUserCoursesInCourseReg(
+            { academicYear, semester },
+            token,
+          );
+          console.log('Fetched courses:', response.data);
+          setUserCourses(response.data || []);
+        } catch (error) {
+          console.error('Error fetching course registrations:', error);
+          setCourses([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+  const handleSemester = () => {
+    // console info handled by 
+    setSemester(user?.semester || 'first');
+  }
+
+  const fetchAcademicYears = async () => {
+      try {
+        const academicYears = await getAcademicYears();
+        console.log('Academic Years:', academicYears);
+        const formattedYears = academicYears.data.map((item: any) => ({
+          label: item.code, // or item.label if your API uses 'label'
+          value: item.id,   // or item.value if your API uses 'value'
+        }));
+        setAcademicYear(user?.academicYear?.id || '');
+        setAcademicYears(formattedYears);
+      } catch (error) {
+        console.error('Error fetching academic years:', error);
+      }
+    };
 
   const handleLoadData = () => {
     setLoading(true);
@@ -60,8 +116,8 @@ const LecturerAttendanceIndexScreen = () => {
       onPress={() => navigation.navigate('ViewClassesScreen', { userCourse: item })}
     >
       <View>
-        <Text className="font-semibold">{item.courseCode} - {item.courseName}</Text>
-        <Text className="text-xs text-gray-500">{item.date} | {item.time}</Text>
+        <Text className="font-semibold">{item.curriculumCourse.course.code} - {item.curriculumCourse.course.name}</Text>
+        <Text className="text-xs text-gray-500">{item.level} Level | {item.department.name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -75,11 +131,11 @@ const LecturerAttendanceIndexScreen = () => {
       <View className="flex-row mb-4 items-center justify-between">
         <View style={{ flex: 1, marginRight: 8 }}>
           <Dropdown
-            data={academicSessions}
+            data={academicYears}
             labelField="label"
             valueField="value"
-            value={academicSession}
-            onChange={item => setAcademicSession(item.value)}
+            value={academicYear}
+            onChange={item => setAcademicYear(item.value)}
             placeholder="Academic Year"
             style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, paddingHorizontal: 8, height: 44, backgroundColor: '#fff' }}
           />
@@ -114,7 +170,7 @@ const LecturerAttendanceIndexScreen = () => {
         </View>
       ) : (
         <FlatList
-          data={sessions}
+          data={userCourses}
           keyExtractor={item => item.id}
           renderItem={renderSession}
           contentContainerStyle={{ paddingBottom: 32 }}

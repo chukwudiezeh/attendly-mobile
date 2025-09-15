@@ -15,14 +15,23 @@ import BootSplash from 'react-native-bootsplash';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@/src/components/common/Toasts';
 import { AuthProvider } from "./src/context/AuthContext";
+import Geolocation from "@react-native-community/geolocation";
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
  useEffect(() => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'always', // or 'whenInUse'
+      enableBackgroundLocationUpdates: true,
+      locationProvider: 'auto',
+    });
+
+    Geolocation.requestAuthorization();
     const prepareApp = async () => {
       // Any async task like loading fonts, checking auth, etc.
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate 3s delay
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate 3s delay
     };
 
     prepareApp().finally(async () => {

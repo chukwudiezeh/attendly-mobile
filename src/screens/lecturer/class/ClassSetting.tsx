@@ -7,6 +7,8 @@ import { MultiSelect } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createClassSetting, createClassSchedule, getClassSetting, getClassSchedule } from '@/src/services/classService';
 import { useAuth } from '@/src/context/AuthContext';
+import Toast from 'react-native-toast-message';
+import { useNavigation } from '@react-navigation/native';
 
 const daysOfWeek = [
     { label: 'Monday', value: 'Monday' },
@@ -34,6 +36,7 @@ const ClassSetting = () => {
 
     const route = useRoute();
     const { userCourse } = route.params as { userCourse: any };
+    const navigation = useNavigation();
 
     const [classSetting, setClassSetting] = useState<any>({});
     const [classSchedule, setClassSchedule] = useState<any[]>([]);
@@ -55,26 +58,69 @@ const ClassSetting = () => {
     const isDisabled = isLoading || hasExistingData;
 
     useEffect(() => {
+
+        if (hasExistingData && classSetting) {
+            console.log('Populating form with existing data:', classSetting);
+            setAttendanceWindow(classSetting.attendanceWindow.toString() || '15');
+            setAttendancePassMark(classSetting.attendancePassMark.toString() || '75');
+            setAllowedRadius(classSetting.allowedRadius.toString() || '25');
+            setIsRecurring(classSetting.recurringClasses ?? true);
+            setNotifyStudent(classSetting.shouldSendNotifications ?? true);
+        }
+        if (hasExistingData && classSchedule && classSchedule.length > 0) {
+            console.log('Populating schedule with existing data:', classSchedule);
+            const days = classSchedule.map(item => item.day);
+            setSelectedDays(days);
+            const times: { [key: string]: { start: string; end: string } } = {};
+            const pickers: { [key: string]: { start: Date; end: Date } } = {};
+            classSchedule.forEach(item => {
+                times[item.day] = { start: item.startTime, end: item.endTime };
+                // Convert "HH:MM AM/PM" to Date object for pickerDate
+                const [startTime, startPeriod] = item.startTime.split(' ');
+                let [startHour, startMinute] = startTime.split(':').map(Number);
+                if (startPeriod === 'PM' && startHour < 12) startHour += 12;
+                if (startPeriod === 'AM' && startHour === 12) startHour = 0;
+
+                const [endTime, endPeriod] = item.endTime.split(' ');
+                let [endHour, endMinute] = endTime.split(':').map(Number);
+                if (endPeriod === 'PM' && endHour < 12) endHour += 12;
+                if (endPeriod === 'AM' && endHour === 12) endHour = 0;
+
+                const startDate = new Date();
+                startDate.setHours(startHour, startMinute, 0, 0);
+                const endDate = new Date();
+                endDate.setHours(endHour, endMinute, 0, 0);
+
+                pickers[item.day] = { start: startDate, end: endDate };
+            });
+            setDayTimes(times);
+            setPickerDate(pickers);
+            if (classSchedule[0].location) {
+                setLocation(classSchedule[0].location);
+            }
+        }
+        
         if (
             (!classSetting || Object.keys(classSetting).length === 0) &&
             (!classSchedule || classSchedule.length === 0)
         ) {
             fetchClassSettingAndSchedule();
         }
-    }, [classSetting, classSchedule]);
+    }, [hasExistingData, classSetting, classSchedule]);
 
     const fetchClassSettingAndSchedule = async () => {
         try {
-            const classSetting = await getClassSetting(token, userCourse.curriculumCourse.id);
-            const classSchedule = await getClassSchedule(token, userCourse.curriculumCourse.id);
-            setClassSetting(classSetting.data);
-            setClassSchedule(classSchedule.data);
-
+            const classSettingResp = await getClassSetting(token, userCourse.curriculumCourse.id);
+            const classScheduleResp = await getClassSchedule(token, userCourse.curriculumCourse.id);
+            
             if (
-            (classSetting.data && Object.keys(classSetting.data).length > 0) ||
-            (classSchedule.data && classSchedule.data.length > 0)
-        ) {
-            setHasExistingData(true);
+                (classSettingResp.data && Object.keys(classSettingResp.data).length > 0) ||
+                (classScheduleResp.data && classScheduleResp.data.length > 0)
+            ) {
+                
+                setClassSetting(classSettingResp.data);
+                setClassSchedule(classScheduleResp.data);
+                setHasExistingData(true);
         } else {
             setHasExistingData(false);
         }
@@ -98,38 +144,65 @@ const ClassSetting = () => {
         });
         setShowPicker({});
         setPickerDate({});
+       
     };
 
     const handleTimeChange = (day: string, type: 'start' | 'end', event: any, selectedDate?: Date) => {
+    console.log('=== handleTimeChange ===');
+    console.log('selectedDate from picker:', selectedDate?.toLocaleTimeString());
+    console.log('event.type:', event?.type);
+    
+    if (Platform.OS === 'android') {
         setShowPicker(prev => ({
             ...prev,
-            [day]: { ...prev[day], [type]: Platform.OS === 'ios' }
+            [day]: { ...prev[day], [type]: false }
         }));
-        if (selectedDate) {
-            setPickerDate(prev => ({
-                ...prev,
-                [day]: { ...prev[day], [type]: selectedDate }
-            }));
-            setDayTimes(prev => ({
-                ...prev,
-                [day]: { ...prev[day], [type]: formatTime(selectedDate) }
-            }));
-        }
-    };
-
-    const openPicker = (day: string, type: 'start' | 'end') => {
-        setShowPicker(prev => ({
-            ...prev,
-            [day]: { ...(prev[day] || {}), [type]: true }
-        }));
+    }
+    
+    if (event?.type === 'set' && selectedDate) {
+        console.log('About to update with:', selectedDate.toLocaleTimeString());
+        console.log('formatTime result:', formatTime(selectedDate));
+        
         setPickerDate(prev => ({
             ...prev,
-            [day]: {
-                ...(prev[day] || {}),
-                [type]: prev[day]?.[type] || new Date()
-            }
+            [day]: { ...prev[day], [type]: selectedDate }
         }));
-    };
+        
+        setDayTimes(prev => ({
+            ...prev,
+            [day]: { ...prev[day], [type]: formatTime(selectedDate) }
+        }));
+    }
+};
+
+const openPicker = (day: string, type: 'start' | 'end') => {
+    console.log('=== openPicker ===');
+    console.log('Existing pickerDate:', pickerDate[day]?.[type]?.toLocaleTimeString());
+    console.log('Existing dayTime:', dayTimes[day]?.[type]);
+    
+    setShowPicker(prev => ({
+        ...prev,
+        [day]: { ...(prev[day] || {}), [type]: true }
+    }));
+    
+    const defaultTime = new Date();
+    if (type === 'start') {
+        defaultTime.setHours(9, 0, 0, 0);
+    } else {
+        defaultTime.setHours(17, 0, 0, 0);
+    }
+    
+    const timeToUse = pickerDate[day]?.[type] || defaultTime;
+    console.log('Time being set for picker:', timeToUse.toLocaleTimeString());
+    
+    setPickerDate(prev => ({
+        ...prev,
+        [day]: {
+            ...(prev[day] || {}),
+            [type]: timeToUse
+        }
+    }));
+};
 
     const handleSave = async () => {
         setIsLoading(true);
@@ -143,6 +216,7 @@ const ClassSetting = () => {
                 shouldSendNotifications: notifyStudent
             };
             const classSettingResponse = await createClassSetting(token, classSettingPayload);
+            console.log('Class Setting Response:', classSettingResponse.data);
             setClassSetting(classSettingResponse.data);
 
             selectedDays.forEach(async (item) => {
@@ -154,10 +228,17 @@ const ClassSetting = () => {
                     endTime: dayTimes[item].end
                 };
                 const classScheduleResponse = await createClassSchedule(token, classSchedulePayload);
+                console.log(`Class Schedule for ${item} Response:`, classScheduleResponse.data);
                 setClassSchedule(prev => [...prev, classScheduleResponse.data]);
             });
 
             setHasExistingData(true);
+
+            Toast.show({
+                type: 'success',
+                text1: 'Class settings saved successfully',
+            });
+            navigation.goBack();
         } catch (error: any) {
             console.error(error);
         }
@@ -281,18 +362,18 @@ const ClassSetting = () => {
                                 {/* DateTimePickers */}
                                 {showPicker[day]?.start && (
                                     <DateTimePicker
-                                        value={pickerDate[day]?.start || new Date()}
+                                        value={pickerDate[day]?.start}
                                         mode="time"
-                                        is24Hour={false}
+                                        is24Hour={true}
                                         display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                         onChange={(event, selectedDate) => handleTimeChange(day, 'start', event, selectedDate)}
                                     />
                                 )}
                                 {showPicker[day]?.end && (
                                     <DateTimePicker
-                                        value={pickerDate[day]?.end || new Date()}
+                                        value={pickerDate[day]?.end}
                                         mode="time"
-                                        is24Hour={false}
+                                        is24Hour={true}
                                         display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                                         onChange={(event, selectedDate) => handleTimeChange(day, 'end', event, selectedDate)}
                                     />
@@ -347,7 +428,7 @@ const ClassSetting = () => {
             <TouchableOpacity
                 className="bg-primary-600 py-3 rounded-lg flex-row items-center justify-center mt-2"
                 onPress={handleSave}
-                disabled={isLoading}
+                disabled={isLoading || hasExistingData}
             >
                 {isLoading ? (
                     <>

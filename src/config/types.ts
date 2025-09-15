@@ -61,9 +61,21 @@ export type LecturerStackParamList = {
   LecturerViewCourseRegScreen: { semester: string; academicYear: any };
   ClassSettingScreen: { userCourse: any };
   ViewClassesScreen: { userCourse: any };
-  ViewClassDetailScreen: { userCourse: any, classId: string };
+  ViewClassDetailScreen: { userCourse: any, class: any };
 };
 
 export interface BackHeaderProps {
   title: string;
 }
+
+export type AcademicInfoModalProps = {
+  visible: boolean;
+  academicYears: any[];
+  semesters: any[];
+  selectedAcademicYear: string;
+  selectedSemester: string;
+  isLoading: boolean;
+  onSelectAcademicYear: (value: string) => void;
+  onSelectSemester: (value: string) => void;
+  onSave: () => void;
+};

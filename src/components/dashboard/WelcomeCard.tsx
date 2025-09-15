@@ -22,7 +22,7 @@ export const WelcomeCard = () => {
             <Text className="text-sm text-white">2nd Semester</Text>
           </View>
           ) : user?.role === 'lecturer'  && user?.semester ? (
-            <Text className="mt-1 text-sm text-white">{user?.semester || 'N/A'}</Text>
+            <Text className="mt-1 text-sm text-white">{user?.semester == 'first' ? '1st' : '2nd'} Semester</Text>
           ) : null
         }
         <Text className="text-sm text-white mt-1">{user?.department.name || 'N/A'}</Text>

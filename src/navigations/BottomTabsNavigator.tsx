@@ -9,7 +9,7 @@ import { useAuth } from '@/src/context/AuthContext';
 //Student Screens
 import DashboardScreen from '@/src/screens/student/DashboardScreen';
 import CourseIndexScreen from '@/src/screens/student/course/CourseIndexScreen';
-import AttendanceIndexScreen from '@/src/screens/student/attendance/AttendanceIndexScreen';
+import AttendanceCourseScreen from '@/src/screens/student/attendance/AttendanceCourseScreen';
 
 //Lecturer Screens
 import LecturerDashboardScreen from '@/src/screens/lecturer/DashboardScreen';
@@ -49,8 +49,7 @@ const BottomTabs = () => {
         <>
         <Tab.Screen name="Dashboard" component={ DashboardScreen } />
         <Tab.Screen name="Course" component={ CourseIndexScreen } />
-        <Tab.Screen name="Attendance" component={ AttendanceIndexScreen } />
-        
+        <Tab.Screen name="Attendance" component={ AttendanceCourseScreen } />
         </>
       ) : (
         <>

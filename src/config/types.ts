@@ -64,6 +64,18 @@ export type LecturerStackParamList = {
   ViewClassDetailScreen: { userCourse: any, class: any };
 };
 
+export type StudentStackParamList = {
+  CourseIndexScreen: undefined;
+  CourseRegScreen: undefined;
+  ViewCourseRegScreen: { semester: string; academicYear: any, level: string };
+  AttendanceBaseScreen: undefined;
+};
+
+export type StudentAttendanceStackParamList = {
+  AttendanceSummary: undefined;
+  StudentClassesScreen: undefined;
+};
+
 export interface BackHeaderProps {
   title: string;
 }

@@ -10,8 +10,8 @@ import { getCurriculumCourses, RegisterUserCourses } from '@/src/services/course
 import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 
-const levels = ['100', '200', '300', '400', '500', '600'];
-const semesters = [{label: '1st Semester', value: 'first'}, {label: '2nd Semester', value: 'second'}];
+const levels = ['100', '200', '300', '400'];
+const semesters = [{ label: '1st Semester', value: 'first' }, { label: '2nd Semester', value: 'second' }];
 
 const CourseRegScreen = () => {
   const { authData } = useAuth();
@@ -19,7 +19,7 @@ const CourseRegScreen = () => {
   const user = authData?.user;
 
   const navigation = useNavigation();
-  
+
   const [isSubmitButtonLoading, setIsSubmitButtonLoading] = useState(false);
   const [academicYears, setAcademicYears] = useState<any[]>([]);
   const [selectedSession, setSelectedSession] = useState('');
@@ -73,7 +73,7 @@ const CourseRegScreen = () => {
     setSelectedCourses(prev => prev.filter(c => c.id !== id));
   };
 
-   const reInitializeSelections = () => {
+  const reInitializeSelections = () => {
     setSelectedCourses([]);
     setSelectedSession('');
     setSelectedLevel('');
@@ -95,7 +95,7 @@ const CourseRegScreen = () => {
         curriculumCourseRole: user?.role,
         curriculumCourses: selectedCourseIds
       };
-  
+
       const saveUserCourses = await RegisterUserCourses(formattedPayload, token);
       if (saveUserCourses.success) {
         Toast.show({
@@ -127,7 +127,7 @@ const CourseRegScreen = () => {
   return (
     <View className="flex-1 bg-gray-100 px-4 pt-16 pb-16">
       <View className="mb-4">
-        <BackHeader title='Student Course Registration'/>
+        <BackHeader title='Student Course Registration' />
 
         {/* Dropdowns */}
         <View className="mb-4 z-10 bg-white p-4 rounded-lg shadow">
@@ -222,7 +222,7 @@ const CourseRegScreen = () => {
         </View>
       </View>
       {/* Preview Button */}
-      { selectedCourses.length > 0 && (
+      {selectedCourses.length > 0 && (
         <View className="left-0 right-0">
           <TouchableOpacity
             className="bg-primary-600 py-3 rounded-lg flex-row items-center justify-center"
@@ -232,7 +232,7 @@ const CourseRegScreen = () => {
             <Text className="text-white text-base font-semibold">Preview</Text>
           </TouchableOpacity>
         </View>
-    )}
+      )}
 
       {/* Preview Modal */}
 
@@ -285,11 +285,15 @@ const CourseRegScreen = () => {
             <TouchableOpacity
               className="bg-primary-600 py-3 rounded-lg flex-row items-center justify-center mt-6"
               onPress={() => {
-                // Handle save/submit logic here
                 saveSelectedCourses();
               }}
+              disabled={isSubmitButtonLoading}
             >
-              <Text className="text-white text-base font-semibold">Save / Submit</Text>
+              {isSubmitButtonLoading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text className="text-white text-base font-semibold">Save / Submit</Text>
+              )}
             </TouchableOpacity>
             {/* Close Modal Button */}
             <TouchableOpacity
@@ -301,7 +305,7 @@ const CourseRegScreen = () => {
           </View>
         </View>
       </Modal>
-      </View>
+    </View>
   );
 };
 

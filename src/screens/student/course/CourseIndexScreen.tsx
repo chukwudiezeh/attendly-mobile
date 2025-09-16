@@ -2,25 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ScreenHeader } from '@/src/components/common/ScreenHeader';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getUserCourseRegs } from '@/src/services/courseService';
 import { useAuth } from '@/src/context/AuthContext';
-
-const mockCourseRegistrations = [
-  // Example data structure
-  {
-    session: '2023/2024',
-    level: '200',
-    semester: '2nd Semester',
-    courses: ['GST 101 - Use of English', 'PHY 101 - Physics I'],
-  },
-];
+import { StudentStackParamList } from '@/src/config/types';
 
 const CourseIndexScreen = () => {
   const { authData } = useAuth();
   const token = authData?.token;
 
   const [userCourseRegs, setUserCourseRegs] = useState<any[]>([]);
+  const isFocused = useIsFocused();
+
   useEffect(() => {
       const fetchUserCourseRegs = async () => {
         try {
@@ -31,35 +25,55 @@ const CourseIndexScreen = () => {
           console.error('Error fetching courses:', error);
         }
       };
-  
-      fetchUserCourseRegs();
-    }, [token]);
+      if (isFocused) {
+        fetchUserCourseRegs();
+      }
+    }, [isFocused]);
 
-    const navigation = useNavigation();
-
-  const handleAddCourse = () => {
-    // Navigation or logic to add new course registration
-    console.log('Add new course registration');
-  };
-
-  const renderRegistration = ({ item }: { item: any }) => (
-    <View className="bg-white rounded-xl shadow p-4 mb-4 flex-row items-center justify-between">
+    const navigation = useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
+const renderRegistration = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('ViewCourseRegScreen', {
+          semester: item.semester,
+          academicYear: item.academicYear,
+          level: item.level
+        })
+      }
+      className="bg-white rounded-xl shadow p-4 mb-4 flex-row items-center justify-between"
+    >
       <View>
-        <Text className="font-bold text-base mb-1">{item.session}</Text>
-        <Text className="text-sm text-gray-700 mb-1">{item.level} Level, {item.semester}</Text>
+        <Text className="font-bold text-base mb-1">
+          {item.academicYear.code}
+        </Text>
+        <View className="flex-row items-center">
+          <Text className="text-sm text-gray-700 mb-1">
+            {item.level} Level,
+          </Text>
+          <Text className="text-sm text-gray-700 mb-1">
+            {item.semester == 'first' ? ' 1st' : ' 2nd'} Semester
+          </Text>
+        </View>
       </View>
       <View className="flex-row space-x-4">
-        <TouchableOpacity onPress={() => console.log('View', item)} style={{ marginLeft: 20 }}>
-          <Ionicons name="eye-outline" size={22} color="#6366f1" />
+        <TouchableOpacity
+          onPress={() => console.log('View', item)}
+          style={{ marginLeft: 20 }}
+        >
+          <Ionicons
+            name="ellipsis-vertical-outline"
+            size={22}
+            color="#6366f1"
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Edit', item)} style={{ marginLeft: 20 }}>
+        {/* <TouchableOpacity onPress={() => console.log('Edit', item)} style={{ marginLeft: 20 }}>
           <Ionicons name="create-outline" size={22} color="#f59e42" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Delete', item)} style={{ marginLeft: 20 }}>
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity onPress={() => console.log('Delete', item)} style={{ marginLeft: 20 }}>
           <Ionicons name="trash-outline" size={22} color="#ef4444" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

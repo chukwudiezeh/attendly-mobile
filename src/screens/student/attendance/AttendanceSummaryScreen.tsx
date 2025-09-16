@@ -4,7 +4,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScreenHeader} from '@/src/components/common/ScreenHeader';
 
-const AttendanceIndexScreen = () => {
+const AttendanceSummaryScreen = () => {
   // Mock data - replace with real data
   const overallAttendance = 85;
   const totalClasses = 45;
@@ -130,4 +130,4 @@ const AttendanceIndexScreen = () => {
   );
 };
 
-export default AttendanceIndexScreen;
+export default AttendanceSummaryScreen;

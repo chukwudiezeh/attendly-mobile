@@ -31,11 +31,6 @@ const LecturerCourseIndexScreen = () => {
 
   const navigation = useNavigation<NativeStackNavigationProp<LecturerStackParamList>>();
 
-  const handleAddCourse = () => {
-    // Navigation or logic to add new course registration
-    console.log('Add new course registration');
-  };
-
   const renderRegistration = ({ item }: { item: any }) => (
     <TouchableOpacity
       onPress={() =>

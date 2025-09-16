@@ -3,10 +3,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import VerifyEmailScreen from '../../screens/auth/VerifyEmailScreen';
 // import DashboardScreen from '../../screens/student/DashboardScreen';
 import { useAuth } from '../../context/AuthContext';
-import BottomTabsNavigator from '../BottomTabsNavigator';
-import DrawerNavigator from '../DrawerNavigator';
 
+// Navigations
+// import BottomTabsNavigator from '../BottomTabsNavigator';
+import DrawerNavigator from '../DrawerNavigator';
+// import TopNavigator from '../TopNavigator';
+
+// Student Screens
 import CourseRegScreen from '@/src/screens/student/course/CourseRegScreen';
+import ViewCourseRegScreen from '@/src/screens/student/course/ViewCourseRegScreen';
+import AttendanceBaseScreen from '@/src/screens/student/attendance/AttendanceBaseScreen';
 
 //Lecturer Screens
 import LecturerCourseRegScreen from '@/src/screens/lecturer/course/CourseRegScreen';
@@ -35,6 +41,16 @@ const AuthStack = () => {
               <Stack.Screen
                 name="CourseRegScreen"
                 component={CourseRegScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ViewCourseRegScreen"
+                component={ViewCourseRegScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="AttendanceBaseScreen"
+                component={AttendanceBaseScreen}
                 options={{ headerShown: false }}
               />
             </>

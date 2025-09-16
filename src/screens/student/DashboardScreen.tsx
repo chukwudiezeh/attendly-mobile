@@ -1,14 +1,85 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
 import { WelcomeCard } from '@/src/components/dashboard/WelcomeCard';
 import { ScreenHeader } from '@/src/components/common/ScreenHeader';
 import { useAuth } from '@/src/context/AuthContext';
+import { Dropdown } from 'react-native-element-dropdown';
+import { getAcademicYears } from '@/src/services/utilityService';
+import { updateUserInfo } from '@/src/services/userService';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AcademicInfoModal from '@/src/components/dashboard/AcademicInfoModal';
+
 const DashboardScreen = () => {
 
+  const { authData, setAuthData } = useAuth();
+  
+    const [isLoading, setIsLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [levels, setLevels] = useState<any[]>([
+      { label: '100', value: '100' },
+      { label: '200', value: '200' },
+      { label: '300', value: '300' },
+      { label: '400', value: '400' },
+      { label: '500', value: '500' },
+      { label: '600', value: '600' },
+    ]);
+    const [selectedLevel, setSelectedLevel] = useState('');
+    const [selectedAcademicYear, setSelectedAcademicYear] = useState('');
+    const [selectedSemester, setSelectedSemester] = useState('');
+    const [academicYears, setAcademicYears] = useState<any[]>([]);
+  
+  
+    const semesters = [
+      { label: '1st Semester', value: 'first' },
+      { label: '2nd Semester', value: 'second' },
+    ];
+  
+    useEffect(() => {
+      fetchAcademicYears();
+      
+      if (!authData?.user?.academicYear || !authData?.user?.semester) {
+        setShowModal(true);
+      }
+    }, [authData]);
+  
+    const fetchAcademicYears = async () => {
+        try {
+          const academicYears = await getAcademicYears();
+          console.log('Academic Years:', academicYears);
+          // Format academic years to { label, value }
+        const academicYearsOptions = academicYears.data
+          ? academicYears.data.map((item: any) => ({
+              label: item.code,
+              value: item.id,   
+            }))
+          : [];
+          setAcademicYears(academicYearsOptions);
+        } catch (error) {
+          console.error('Error fetching academic years:', error);
+        }
+      };
+    
+    const handleUpdateUserInfo = async () => {
+      try {
+        setIsLoading(true);
+        // Call API to update user info with selectedAcademicYear and selectedSemester
+        const updateUserInfoResponse = await updateUserInfo(authData?.token, authData?.user?.id, { academicYear: selectedAcademicYear, semester: selectedSemester, level: selectedLevel });
+        await setAuthData({
+          token: authData?.token || '',
+          user: updateUserInfoResponse.data
+        });
+        setShowModal(false);
+      } catch (error) {
+        console.error('Error updating user info:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
   return (
+    <>
     <ScrollView className="flex-1 bg-gray-100 px-4 pt-16 pb-16" contentContainerStyle={{ paddingBottom: 64 }}>
       {/* Header */}
       <ScreenHeader />
@@ -123,6 +194,23 @@ const DashboardScreen = () => {
         </View>
       </View>
     </ScrollView>
+    {/* Academic Info Modal */}
+      <AcademicInfoModal
+        visible={showModal}
+        academicYears={academicYears}
+        semesters={semesters}
+        selectedAcademicYear={selectedAcademicYear}
+        selectedSemester={selectedSemester}
+        isLoading={isLoading}
+        onSelectAcademicYear={setSelectedAcademicYear}
+        onSelectSemester={setSelectedSemester}
+        onSave={handleUpdateUserInfo}
+        userRole={authData?.user?.role || ''}
+        levels={levels}
+        selectedLevel={selectedLevel}
+        onSelectLevel={setSelectedLevel}
+      />
+    </>
   );
 };
 

@@ -18,8 +18,8 @@ export const WelcomeCard = () => {
         {
           user?.role === 'student' && user?.level ? (
           <View className="flex-row space-x-2 mt-1">
-            <Text className="text-sm text-white">200 Level, </Text>
-            <Text className="text-sm text-white">2nd Semester</Text>
+            <Text className="text-sm text-white">{user?.level} Level, </Text>
+            <Text className="text-sm text-white">{user?.semester == 'first' ? '1st' : '2nd'} Semester</Text>
           </View>
           ) : user?.role === 'lecturer'  && user?.semester ? (
             <Text className="mt-1 text-sm text-white">{user?.semester == 'first' ? '1st' : '2nd'} Semester</Text>

@@ -74,8 +74,12 @@ export type AcademicInfoModalProps = {
   semesters: any[];
   selectedAcademicYear: string;
   selectedSemester: string;
+  levels?: string[];
+  selectedLevel?: string;
   isLoading: boolean;
+  userRole: string;
   onSelectAcademicYear: (value: string) => void;
   onSelectSemester: (value: string) => void;
+  onSelectLevel: (value: string) => void;
   onSave: () => void;
 };

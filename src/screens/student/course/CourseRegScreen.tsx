@@ -1,5 +1,5 @@
 import React, { use, useEffect, useState } from 'react';
-import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, ScrollView, FlatList, TouchableOpacity, Modal, ActivityIndicator } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { BackHeader } from '@/src/components/common/BackHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,6 +20,7 @@ const CourseRegScreen = () => {
 
   const navigation = useNavigation();
   
+  const [isSubmitButtonLoading, setIsSubmitButtonLoading] = useState(false);
   const [academicYears, setAcademicYears] = useState<any[]>([]);
   const [selectedSession, setSelectedSession] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
@@ -72,9 +73,18 @@ const CourseRegScreen = () => {
     setSelectedCourses(prev => prev.filter(c => c.id !== id));
   };
 
+   const reInitializeSelections = () => {
+    setSelectedCourses([]);
+    setSelectedSession('');
+    setSelectedLevel('');
+    setSelectedSemester('');
+    setCourses([]);
+  };
+
   const saveSelectedCourses = async () => {
     // Implement save logic here, e.g., send to backend
     console.log('Saving selected courses:', selectedCourses);
+    setIsSubmitButtonLoading(true);
     try {
       const selectedCourseIds = selectedCourses.map(c => c.id);
       const formattedPayload = {
@@ -93,7 +103,8 @@ const CourseRegScreen = () => {
           text1: saveUserCourses.message || 'Courses registered successfully',
         });
 
-        navigation.navigate('Course' as never);
+        reInitializeSelections();
+        navigation.goBack();
       }
 
     } catch (error: any) {
@@ -102,6 +113,8 @@ const CourseRegScreen = () => {
         type: 'error',
         text1: error.message || 'Could not register courses. Try again'
       });
+    } finally {
+      setIsSubmitButtonLoading(false);
     }
     // After saving, close the modal
     setPreviewVisible(false);

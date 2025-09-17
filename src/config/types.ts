@@ -68,7 +68,8 @@ export type StudentStackParamList = {
   CourseIndexScreen: undefined;
   CourseRegScreen: undefined;
   ViewCourseRegScreen: { semester: string; academicYear: any, level: string };
-  AttendanceBaseScreen: undefined;
+  AttendanceBaseScreen: {userCourse: any};
+  ViewClassScreen: { userCourse: any, class: any };
 };
 
 export type StudentAttendanceStackParamList = {

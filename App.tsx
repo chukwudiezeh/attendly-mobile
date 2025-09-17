@@ -21,24 +21,25 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
  useEffect(() => {
-    Geolocation.setRNConfiguration({
-      skipPermissionRequests: false,
-      authorizationLevel: 'always', // or 'whenInUse'
-      enableBackgroundLocationUpdates: true,
-      locationProvider: 'auto',
-    });
-
-    Geolocation.requestAuthorization();
-    const prepareApp = async () => {
-      // Any async task like loading fonts, checking auth, etc.
-      await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate 3s delay
+   Geolocation.setRNConfiguration({
+     skipPermissionRequests: false,
+     authorizationLevel: 'always', // or 'whenInUse'
+     enableBackgroundLocationUpdates: true,
+     locationProvider: 'auto',
+   });
+   
+   Geolocation.requestAuthorization();
+   
+   const prepareApp = async () => {
+     // Any async task like loading fonts, checking auth, etc.
+     await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate 3s delay
     };
-
+    
     prepareApp().finally(async () => {
       await BootSplash.hide({ fade: true }); // Hide native splash screen
     });
   }, []);
-
+  
   return (
     <GluestackUIProviderWrapper mode="light">
       <AuthProvider>

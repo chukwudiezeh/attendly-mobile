@@ -35,6 +35,7 @@
     "react-native-confirmation-code-field": "^8.0.1",
     "react-native-css-interop": "^0.1.22",
     "react-native-element-dropdown": "^2.12.4",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.26.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-pager-view": "^6.9.1",

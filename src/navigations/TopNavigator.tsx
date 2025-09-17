@@ -10,7 +10,7 @@ import StudentClassesScreen from '@/src/screens/student/class/ClassesScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
-const TopNavigator = () => {
+const TopNavigator = ({ userCourse }: { userCourse: any }) => {
   const { authData } = useAuth();
   const isStudent = authData?.user?.role === 'student';
 
@@ -29,11 +29,13 @@ const TopNavigator = () => {
           <Tab.Screen
             name="Summary"
             component={AttendanceSummaryScreen}
+            initialParams={{ userCourse }}
             options={{ title: 'Summary' }}
           />
         <Tab.Screen
           name="Classes"
           component={StudentClassesScreen}
+          initialParams={{ userCourse }}
           options={{ title: 'Classes' }}
         />
         </>

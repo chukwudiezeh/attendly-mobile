@@ -105,7 +105,7 @@ const AttendanceCourseScreen = () => {
   const renderSession = ({ item }: { item: any }) => (
     <TouchableOpacity
       className="bg-white rounded-xl shadow p-4 mb-4 flex-row items-center justify-between"
-      onPress={() => navigation.navigate('AttendanceBaseScreen',)}
+      onPress={() => navigation.navigate('AttendanceBaseScreen', { userCourse: item })}
     >
       <View>
         <Text className="font-semibold">{item.curriculumCourse.course.code} - {item.curriculumCourse.course.name}</Text>

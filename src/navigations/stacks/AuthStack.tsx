@@ -13,7 +13,7 @@ import DrawerNavigator from '../DrawerNavigator';
 import CourseRegScreen from '@/src/screens/student/course/CourseRegScreen';
 import ViewCourseRegScreen from '@/src/screens/student/course/ViewCourseRegScreen';
 import AttendanceBaseScreen from '@/src/screens/student/attendance/AttendanceBaseScreen';
-
+import ViewClassScreen from '@/src/screens/student/class/ViewClassScreen';
 //Lecturer Screens
 import LecturerCourseRegScreen from '@/src/screens/lecturer/course/CourseRegScreen';
 import LecturerViewCourseRegScreen from '@/src/screens/lecturer/course/ViewCourseRegScreen';
@@ -51,6 +51,11 @@ const AuthStack = () => {
               <Stack.Screen
                 name="AttendanceBaseScreen"
                 component={AttendanceBaseScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ViewClassScreen"
+                component={ViewClassScreen}
                 options={{ headerShown: false }}
               />
             </>

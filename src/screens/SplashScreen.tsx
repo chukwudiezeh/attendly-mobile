@@ -12,7 +12,7 @@ const Splash = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/logos/attendlylogo.svg')}
+        source={require('../assets/logos/attendly.svg')}
         style={styles.logo}
         resizeMode="contain"
       />

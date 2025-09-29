@@ -26,18 +26,6 @@ const AttendanceSummaryScreen = () => {
   const requiredAttendance = 75;
 
   const navigation = useNavigation<NativeStackNavigationProp<StudentStackParamList>>();
-  const recentAttendance = [
-    { course: 'GST 101', date: '2024-08-10', status: 'Present' },
-    { course: 'PHY 101', date: '2024-08-09', status: 'Absent' },
-    { course: 'MTH 101', date: '2024-08-08', status: 'Present' },
-  ];
-
-  const courseAttendance = [
-    { course: 'GST 101 - Use of English', percentage: 90, present: 18, total: 20 },
-    { course: 'PHY 101 - Physics I', percentage: 80, present: 12, total: 15 },
-    { course: 'MTH 101 - Mathematics', percentage: 70, present: 8, total: 10 },
-  ];
-
 
   useEffect(() => {
     // Fetch attendance data from API if needed

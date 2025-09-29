@@ -5,6 +5,7 @@ import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/src/context/AuthContext';
 
+import ProfileScreen from '@/src/screens/user/ProfileScreen';
 
 //Student Screens
 import DashboardScreen from '@/src/screens/student/DashboardScreen';
@@ -37,9 +38,9 @@ const BottomTabs = () => {
           let iconName = 'home-outline';
 
           if (route.name === 'Home') iconName = 'home-outline';
-          if (route.name === 'Course') iconName = 'person-outline';
-          if (route.name === 'Attendance') iconName = 'settings-outline';
-          if (route.name === 'Settings') iconName = 'settings-outline';
+          if (route.name === 'Course') iconName = 'book-outline';
+          if (route.name === 'Attendance') iconName = 'checkmark-outline';
+          if (route.name === 'Profile') iconName = 'person-outline';
 
           return <Icon name={iconName} size={size} color={color} />;
         }
@@ -58,8 +59,8 @@ const BottomTabs = () => {
           <Tab.Screen name="Attendance" component={ LecturerAttendanceIndexScreen } />
         </>
       )}
-      
-      <Tab.Screen name="Settings" component={ SettingsScreen } />
+
+      <Tab.Screen name="Profile" component={ ProfileScreen } />
     </Tab.Navigator>
   );
 };

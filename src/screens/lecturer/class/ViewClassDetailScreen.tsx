@@ -26,7 +26,7 @@ const ViewClassDetailScreen = () => {
   const token = authData?.token;
 
   useEffect(() => {
-    // TODO: Fetch class details using the token
+    console.log('ClassDetailScreen mounted with class:', classInfo);
   }, [token]);
 
   const handleStartClass = async () => {
@@ -36,12 +36,13 @@ const ViewClassDetailScreen = () => {
         async (position) => {
           const payload = {
             status: 'in_progress',
+            actualStartTime: new Date(Date.now()),
             geolocationData: position.coords
           };
           try {
             const updatedClass = await updateClass(token || '', classInfo.id, payload);
             console.log('Class started:', updatedClass);
-            setClassInfo(updatedClass);
+            setClassInfo(updatedClass.data);
           } catch (err) {
             console.error('Error updating class:', err);
           }
@@ -65,11 +66,11 @@ const ViewClassDetailScreen = () => {
   const handleEndClass = async () => {
     setStartButtonLoading(true);
     try {
-      const payload = { status: 'completed' };
+      const payload = { status: 'completed', actualEndTime: new Date(Date.now()), };
       try {
         const updatedClass = await updateClass(token || '', classInfo.id, payload);
         console.log('Class ended:', updatedClass);
-        setClassInfo(updatedClass);
+        setClassInfo(updatedClass.data);
       } catch (err) {
         console.error('Error updating class:', err);
       }
@@ -105,7 +106,7 @@ const ViewClassDetailScreen = () => {
         text1: 'Attendance exported!',
         text2: `Saved to ${filePath}`,
       });
-    } catch (error) {
+    } catch (error: any) {
       Toast.show({
         type: 'error',
         text1: 'Export failed',

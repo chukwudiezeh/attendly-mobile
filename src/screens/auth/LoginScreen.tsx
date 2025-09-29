@@ -89,8 +89,9 @@ const LoginScreen = () => {
       {/* Logo */}
       <View className="items-center mb-10">
         {/* Replace with actual logo image */}
-        <Image source={require('@/src/assets/logos/attendlylogo.png')}
-        resizeMode="contain"/>
+        <Image source={require('@/src/assets/logos/attendlyL.png')}
+        resizeMode="contain"
+        style={{width: 300, height: 100}}/>
       </View>
 
       {/* Title */}

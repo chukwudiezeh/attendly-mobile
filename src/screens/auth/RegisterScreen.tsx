@@ -161,8 +161,9 @@ const RegisterScreen = () => {
         contentContainerStyle= {{ paddingTop: 65 }}>
           {/* Logo */}
           <View className="items-center mb-10">
-            <Image source={require('@/src/assets/logos/attendlylogo.png')}
-            resizeMode="contain"/>
+            <Image source={require('@/src/assets/logos/attendlyL.png')}
+            resizeMode="contain"
+            style={{width: 80, height: 80}}/>
           </View>
 
           {/* Title */}

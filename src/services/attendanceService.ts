@@ -19,7 +19,7 @@ export const handleClockIn = async (classId: string, geolocationData: any, token
     try {
         const payload = {
             class: classId,
-            geolocationData: geolocationData
+            checkInCoordinates: geolocationData
         };
         const response = await axios.put(`${apiBaseUrl}/class-attendances/clockin`, payload, {
             headers: {

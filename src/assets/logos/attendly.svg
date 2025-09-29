@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1000" height="1000" viewBox="0 0 1000 1000" xml:space="preserve">
+<desc>Created with Fabric.js 3.5.0</desc>
+<defs>
+</defs>
+<rect x="0" y="0" width="100%" height="100%" fill="#ffffff"></rect>
+<g transform="matrix(3.2468 0 0 3.2468 173.7027 498.378)" id="591214"  >
+<linearGradient id="SVGID_4" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0" y1="0" x2="1" y2="1">
+<stop offset="0%" style="stop-color:rgb(102,126,234);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(118,75,162);stop-opacity: 1"/>
+</linearGradient>
+<rect style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; is-custom-font: none; font-file-url: none; fill: url(#SVGID_4); fill-rule: nonzero; opacity: 1;"  x="-30" y="-30" rx="12" ry="12" width="60" height="60" />
+</g>
+<g transform="matrix(3.2468 0 0 3.2468 175.3255 491.8838)" id="727432"  >
+<path style="stroke: rgb(255,255,255); stroke-width: 4; stroke-dasharray: none; stroke-linecap: round; stroke-dashoffset: 0; stroke-linejoin: round; stroke-miterlimit: 4; is-custom-font: none; font-file-url: none; fill: none; fill-rule: nonzero; opacity: 1;"  transform=" translate(-40, -37.5)" d="M 25 40 L 35 50 L 55 25" stroke-linecap="round" />
+</g>
+<g transform="matrix(3.9223 0 0 3.9223 565.3679 498.0397)" style="" id="991383"  >
+		<text xml:space="preserve" font-family="Arial, sans-serif" font-size="32" font-style="normal" font-weight="bold" style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; is-custom-font: none; font-file-url: none; fill: rgb(51,51,51); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="-64" y="10.0525" >Attendly</tspan></text>
+</g>
+</svg>

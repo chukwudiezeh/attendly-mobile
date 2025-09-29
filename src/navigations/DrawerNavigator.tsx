@@ -3,6 +3,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NewAppScreen } from "@react-native/new-app-screen";
 import CustomDrawerContent from '@/src/components/common/CustomDrawerContent';
 import BottomNavigator from './BottomTabsNavigator'; // Assuming you have a BottomTabsNavigator
+// import ProfileScreen from "@/src/screens/user/ProfileScreen";
+
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
@@ -12,7 +14,7 @@ const DrawerNavigator = () => {
         headerShown: false,
       }}>
         <Drawer.Screen name="Home" component={BottomNavigator} />
-      <Drawer.Screen name="Profile" component={NewAppScreen} />
+      {/* <Drawer.Screen name="Profile" component={ProfileScreen} /> */}
     </Drawer.Navigator>
   );
 };
